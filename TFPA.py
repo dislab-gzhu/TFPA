@@ -34,21 +34,7 @@ class TFPA:
         mean = seg.mean(dim=1, keepdim=True)
         std = seg.std(dim=1, keepdim=True, unbiased=False) + 1e-8
         return (seg - mean) / std
-    def compute_mfcc(self, waveform):
-        """
-        Compute and normalize MFCC features:
-          waveform: [B, L] or [B,1,L]
-        Returns:
-          mfcc:     [B, n_mfcc, T]
-        """
-        if waveform.dim() == 3 and waveform.size(1) == 1:
-            waveform = waveform.squeeze(1)
-        # [B, n_mfcc, T]
-        mfcc = self.mfcc_transform(waveform.to(self.device))
-        # per‐frame normalization
-        mfcc = (mfcc - mfcc.mean(dim=-1, keepdim=True)) \
-               / (mfcc.std(dim=-1, keepdim=True) + 1e-8)
-        return mfcc
+
     def apply_spec_augment(self, spectrogram,
                         time_mask_param=7,
                         freq_mask_param=4,
@@ -70,17 +56,7 @@ class TFPA:
             spec_aug[:, f0:f0 + f] = 0
         
         return spec_aug.unsqueeze(0)
-    def SCloss(self, adv_spec, target_spec, scales=[1,2,4,8]):
-        loss = 0
-        for s in scales:
-            pool = torch.nn.AvgPool1d(kernel_size=s, stride=s)
-            loss += F.mse_loss(pool(adv_spec), pool(target_spec))
-        diff = target_spec - adv_spec
-        num = torch.norm(diff, p=2, dim=(1,2))
-        den = torch.norm(adv_spec, p=2, dim=(1,2)) + 1e-8
-        sc_loss = 2 * (num/den).mean()
-        loss += 0.5 * sc_loss
-        return loss
+
     def iniPer(self):
         corpus = self.corpus
         per = torch.zeros(1, int(10*16000), device=self.device, requires_grad=True)
