@@ -27,3 +27,16 @@ This is pytorch repository of "TFPA: Enhancing Adversarial Attack on Speech Reco
    python main.py
    ```
 
+## Citation
+
+If you find this work useful, please cite:
+
+```bibtex
+@article{ye2026tfpa,
+  title={TFPA: Enhancing adversarial attack on speech recognition via Time-Frequency Pre-alignment},
+  author={Ye, Xiangyu and Xiao, Yatie and Chen, Kongyang and Guan, Qingxiao and Liu, Zhenbang},
+  journal={Knowledge-Based Systems},
+  pages={115992},
+  year={2026},
+  publisher={Elsevier}
+}
